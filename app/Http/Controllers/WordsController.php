@@ -57,7 +57,7 @@ class WordsController extends Controller
 
             // 结合返回
             return [
-                "title" => $frequent,
+                "text" => $frequent,
                 "attachments" => [
                     [
                         "title" => '词意分布',
