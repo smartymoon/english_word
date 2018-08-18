@@ -39,7 +39,7 @@ class WordsController extends Controller
             $basicElement = $dom->querySelector('#dict-chart-basic');
             if ($basicElement) {
                 $basics = json_decode(urldecode($basicElement->getAttribute('data')), true);
-                $basic = "###### 意思分布\n";
+                $basic = "意思分布";
                 foreach ($basics as $item) {
                     $basic .=  "- {$item['sense']} : {$item['percent']}% \n";
                 }
@@ -49,7 +49,7 @@ class WordsController extends Controller
             $exampleElement = $dom->querySelector('#dict-chart-examples');
             if ($exampleElement) {
                 $examples  = json_decode(urldecode($exampleElement->getAttribute('data')), true);
-                $example = "###### 词性分布\n";
+                $example = "词性分布";
                 foreach ($examples as $item) {
                    $example .=  "- {$item['pos']} : {$item['percent']}% \n";
                 }
@@ -57,13 +57,19 @@ class WordsController extends Controller
 
             // 结合返回
             return [
-                "title" => $basic . "\n" . $example,
+                "title" => $frequent,
                 "attachments" => [
-                    "title" => $frequent
+                    [
+                        "title" => '词意分布',
+                        "text" => $basic
+                    ],
+                    [
+                        "title" => '词性分布',
+                        "text" => $example
+                    ],
                 ]
             ];
         } catch (\Exception $e) {
-            dump($e);
             return [
                 'text' => '和 dict.cn 通讯出错!'
             ];
