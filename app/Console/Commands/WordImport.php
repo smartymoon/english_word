@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Word;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use IvoPetkov\HTML5DOMDocument;
 
 class WordImport extends Command
@@ -23,6 +22,8 @@ class WordImport extends Command
      * @var string
      */
     protected $description = 'import words from dict.cn';
+    private $client;
+    private $dom;
 
     /**
      * Create a new command instance.
@@ -31,6 +32,9 @@ class WordImport extends Command
      */
     public function __construct()
     {
+        $this->client = new Client();
+        $this->dom = new HTML5DOMDocument();
+
         parent::__construct();
     }
 
@@ -52,8 +56,8 @@ class WordImport extends Command
         {
             foreach($teams as $team) {
                 $url = $this->makePageUrl($star, $team);
-                $dom = $this->getContent($url);
-                $this->getWords($dom);
+                $this->getContent($url);
+                $this->getWords();
             }
         }
     }
@@ -63,10 +67,9 @@ class WordImport extends Command
         return "http://dict.cn/dir/base{$star}-{$group}.html";
     }
 
-    private function getWords($dom)
+    private function getWords()
     {
-
-        $groups = $dom->querySelectorAll('.hub-detail-group');
+        $groups = $this->dom->querySelectorAll('.hub-detail-group');
         foreach ($groups as $group)
         {
             $links = $group->querySelectorAll('a');
@@ -76,36 +79,32 @@ class WordImport extends Command
                 $wordMeans = $this->getWordMeans($word);
                 Word::create($wordMeans);
             }
-            sleep(2);
         }
     }
 
     private function getWordMeans($word)
     {
-        $dom = $this->getContent('http://dict.cn/' . $word);
+        $this->getContent('http://dict.cn/' . $word);
 
-        $attrs = $this->getAttrs($dom);
-        $star = $this->getStar($dom);
-        $senses = $this->getSenses($dom);
-        $phonetics = $this->getPhonetics($dom);
+        $attrs = $this->getAttrs();
+        $star = $this->getStar();
+        $senses = $this->getSenses();
+        $phonetics = $this->getPhonetics();
 
         return compact('word', 'star', 'senses', 'attrs', 'phonetics');
     }
 
     private function getContent($url)
     {
-        $client = new Client();
-        $response = $client->get($url);
+        $response = $this->client->get($url);
         $content = $response->getBody()->getContents();
-        $dom = new HTML5DOMDocument();
-        $dom->loadHTML($content);
-        return $dom;
+        $this->dom->loadHTML($content);
     }
 
-    private function getSenses(HTML5DOMDocument $dom)
+    private function getSenses()
     {
         $senses = [];
-        $basicElement = $dom->querySelector('#dict-chart-basic');
+        $basicElement = $this->dom->querySelector('#dict-chart-basic');
         if ($basicElement) {
             $basics = json_decode(urldecode($basicElement->getAttribute('data')), true);
             // sense
@@ -116,10 +115,10 @@ class WordImport extends Command
         return array_slice($senses, 0, 3);
     }
 
-    private function getAttrs(HTML5DOMDocument $dom)
+    private function getAttrs()
     {
         $attrs = [];
-        $exampleElement = $dom->querySelector('#dict-chart-examples');
+        $exampleElement = $this->dom->querySelector('#dict-chart-examples');
         if ($exampleElement) {
             $examples  = json_decode(urldecode($exampleElement->getAttribute('data')), true);
             // pos
@@ -130,16 +129,16 @@ class WordImport extends Command
         return array_slice($attrs, 0, 3);
     }
 
-    private function getStar(HTML5DOMDocument $dom)
+    private function getStar()
     {
-        $frequentElement = $dom->querySelector('.level-title');
+        $frequentElement = $this->dom->querySelector('.level-title');
         $level = $frequentElement->getAttribute('level');
         preg_match('/(\d)星/', $level, $res);
         return $res[1];
     }
 
-    private function getPhonetics(HTML5DOMDocument $dom)
+    private function getPhonetics()
     {
-        return $dom->querySelectorAll("bdo")->item(1)->innerHTML;
+        return $this->dom->querySelectorAll("bdo")->item(1)->innerHTML;
     }
 }
