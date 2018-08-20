@@ -87,8 +87,9 @@ class WordImport extends Command
         $attrs = $this->getAttrs($dom);
         $star = $this->getStar($dom);
         $senses = $this->getSenses($dom);
+        $phonetics = $this->getPhonetics($dom);
 
-        return compact('word', 'star', 'senses', 'attrs');
+        return compact('word', 'star', 'senses', 'attrs', 'phonetics');
     }
 
     private function getContent($url)
@@ -135,5 +136,10 @@ class WordImport extends Command
         $level = $frequentElement->getAttribute('level');
         preg_match('/(\d)星/', $level, $res);
         return $res[1];
+    }
+
+    private function getPhonetics(HTML5DOMDocument $dom)
+    {
+        return $dom->querySelectorAll("bdo")->item(1)->innerHTML;
     }
 }

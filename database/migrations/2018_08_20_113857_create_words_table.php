@@ -16,6 +16,7 @@ class CreateWordsTable extends Migration
         Schema::create('words', function (Blueprint $table) {
             $table->increments('id');
             $table->string('word');
+            $table->string('phonetics');
             $table->json('senses'); // 意思
             $table->json('attrs'); // 属性
             $table->unsignedTinyInteger('star'); // 星级
