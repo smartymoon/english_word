@@ -38,12 +38,12 @@ class WordFilter extends Command
      */
     public function handle()
     {
-         Word::chunk(10, function($words) {
+         Word::where('if_grasp', Word::$TO_CHECK)->chunk(10, function($words) {
             foreach ($words as $word) {
-                if ($this->confirm($word->word .'会这个单词么？')) {
-                    $word->if_grasp = true;
+                if ($this->confirm($word->word)) {
+                    $word->if_grasp = Word::$PASS_CHECK;
                 } else {
-                    $word->if_grasp = false;
+                    $word->if_grasp = Word::$FAIL_CHECK;
                 }
                 $word->save();
             }

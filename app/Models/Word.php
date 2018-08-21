@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Word extends Model
 {
+    public static $TO_CHECK = 0;
+    public static $PASS_CHECK = 1;
+    public static $FAIL_CHECK = 2;
     public $timestamps = false;
     protected $fillable = ['word', 'senses', 'attrs', 'star', 'phonetics'];
     protected $casts = [
         'attrs' => 'array',
         'senses' => 'array',
-        'if_grasp' => 'boolean',
         'if_recite' => 'boolean'
     ];
 }
