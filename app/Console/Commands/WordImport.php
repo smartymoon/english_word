@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\recordWord;
 use App\Models\Word;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
@@ -76,22 +77,11 @@ class WordImport extends Command
             foreach ($links as $link)
             {
                 $word = substr($link->getAttribute('href'), 1);
-                $wordMeans = $this->getWordMeans($word);
-                Word::create($wordMeans);
+                if(!Word::where('word', $word)->first()) {
+                    recordWord::dispatch($word);
+                }
             }
         }
-    }
-
-    private function getWordMeans($word)
-    {
-        $this->getContent('http://dict.cn/' . $word);
-
-        $attrs = $this->getAttrs();
-        $star = $this->getStar();
-        $senses = $this->getSenses();
-        $phonetics = $this->getPhonetics();
-
-        return compact('word', 'star', 'senses', 'attrs', 'phonetics');
     }
 
     private function getContent($url)
@@ -99,46 +89,5 @@ class WordImport extends Command
         $response = $this->client->get($url);
         $content = $response->getBody()->getContents();
         $this->dom->loadHTML($content);
-    }
-
-    private function getSenses()
-    {
-        $senses = [];
-        $basicElement = $this->dom->querySelector('#dict-chart-basic');
-        if ($basicElement) {
-            $basics = json_decode(urldecode($basicElement->getAttribute('data')), true);
-            // sense
-            foreach ($basics as $item) {
-                array_push($senses, "{$item['percent']}% {$item['sense']}");
-            }
-        }
-        return array_slice($senses, 0, 3);
-    }
-
-    private function getAttrs()
-    {
-        $attrs = [];
-        $exampleElement = $this->dom->querySelector('#dict-chart-examples');
-        if ($exampleElement) {
-            $examples  = json_decode(urldecode($exampleElement->getAttribute('data')), true);
-            // pos
-            foreach ($examples as $item) {
-                array_push($attrs, "{$item['percent']}% {$item['pos']}");
-            }
-        }
-        return array_slice($attrs, 0, 3);
-    }
-
-    private function getStar()
-    {
-        $frequentElement = $this->dom->querySelector('.level-title');
-        $level = $frequentElement->getAttribute('level');
-        preg_match('/(\d)星/', $level, $res);
-        return $res[1];
-    }
-
-    private function getPhonetics()
-    {
-        return $this->dom->querySelectorAll("bdo")->item(1)->innerHTML;
     }
 }
