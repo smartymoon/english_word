@@ -12,7 +12,7 @@ class WordFilter extends Command
      *
      * @var string
      */
-    protected $signature = 'word:filter';
+    protected $signature = 'word:filter {star=5}';
 
     /**
      * The console command description.
@@ -38,7 +38,7 @@ class WordFilter extends Command
      */
     public function handle()
     {
-         Word::where('if_grasp', Word::$TO_CHECK)->chunk(10, function($words) {
+         Word::where('if_grasp', Word::$TO_CHECK)->whereStar($this->argument('star'))->chunk(10, function($words) {
             foreach ($words as $word) {
                 if ($this->confirm($word->word)) {
                     $word->if_grasp = Word::$PASS_CHECK;
