@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
-        'words/lookup'
+        'words/lookup',
+        'wechat'
     ];
 }

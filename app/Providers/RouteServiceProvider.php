@@ -39,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapMiniRoutes();
+
         //
     }
 
@@ -69,5 +71,13 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapMiniRoutes()
+    {
+        Route::prefix('mini')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/mini.php'));
     }
 }
