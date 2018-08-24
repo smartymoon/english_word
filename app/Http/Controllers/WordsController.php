@@ -77,7 +77,7 @@ class WordsController extends Controller
 
     public function printWords(int $star)
     {
-       $words = Word::where('if_grasp', Word::$PASS_CHECK)
+       $words = Word::where('if_grasp', Word::$FAIL_CHECK)
            ->whereStar($star)->orderBy('word', 'asc')->get();
        return view('words.print', compact('words'));
     }
