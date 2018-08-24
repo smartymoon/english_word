@@ -13,6 +13,7 @@
 
 Route::group(['namespace' => 'Mini'], function () {
     Route::get('login/{code}', 'AuthController@login');
+    Route::get('dict/{word}', 'WordsController@lookUp');
 
     Route::group(['middleware'=>'auth:mini'], function() {
 
