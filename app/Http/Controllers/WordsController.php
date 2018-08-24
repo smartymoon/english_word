@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Word;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use IvoPetkov\HTML5DOMDocument;
@@ -72,5 +73,12 @@ class WordsController extends Controller
                 'text' => '和 dict.cn 通讯出错!'
             ];
         }
+    }
+
+    public function printWords(int $star)
+    {
+       $words = Word::where('if_grasp', Word::$PASS_CHECK)
+           ->whereStar($star)->orderBy('word', 'asc')->get();
+       return view('words.print', compact('words'));
     }
 }
