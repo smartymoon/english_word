@@ -49,6 +49,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
+        'iview' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
     ],
 
     /*

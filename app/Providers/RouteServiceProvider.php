@@ -41,6 +41,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapMiniRoutes();
 
+        $this->mapIviewRoutes();
+
         //
     }
 
@@ -79,5 +81,13 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/mini.php'));
+    }
+
+    protected function mapIviewRoutes()
+    {
+        Route::prefix('iview')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/iview.php'));
     }
 }
