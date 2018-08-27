@@ -13,8 +13,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+                    <a href="/horizon">Horizon</a>
                 </div>
             </div>
         </div>

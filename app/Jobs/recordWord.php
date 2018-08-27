@@ -36,8 +36,6 @@ class recordWord implements ShouldQueue
      */
     public function handle()
     {
-
-
         $proxy = (new MoguProxy)->getProxy();
         $this->client = new Client([
             'proxy' =>  $proxy['ip'] . ':' . $proxy['port'],

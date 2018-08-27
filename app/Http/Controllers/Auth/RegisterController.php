@@ -37,6 +37,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+        dd('register baned');
         $this->middleware('guest');
     }
 

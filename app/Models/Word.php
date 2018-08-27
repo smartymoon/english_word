@@ -13,6 +13,7 @@ class Word extends Model
     protected $fillable = ['word', 'senses', 'attrs', 'star', 'phonetics'];
     protected $casts = [
         'attrs' => 'array',
+        'sentences' => 'array',
         'senses' => 'array',
         'if_recite' => 'boolean'
     ];
