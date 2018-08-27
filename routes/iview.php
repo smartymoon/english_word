@@ -14,6 +14,7 @@
 Route::group(['namespace' => 'Iview'], function () {
     Route::post('login', 'AuthController@login');
     Route::get('words/{word}/play', 'WordsController@listen');
+    Route::get('sentence/play', 'WordsController@sentenceListen');
 
     Route::group(['middleware'=>'auth:iview'], function() {
         Route::post('logout', 'AuthController@logout');

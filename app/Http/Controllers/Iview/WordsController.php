@@ -34,6 +34,16 @@ class WordsController extends Controller
         ]);
     }
 
+    public function sentenceListen(Request $request)
+    {
+        $url = $request->input('url');
+        $sound = new Sounds();
+        $voice = $sound->play(urldecode($url));
+        return response($voice, 200 , [
+            'content-type' =>'audio/mpeg'
+        ]);
+    }
+
     public function remark($word, Request $request)
     {
         $word = Word::whereWord($word)->first();
