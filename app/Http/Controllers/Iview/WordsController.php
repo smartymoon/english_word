@@ -13,7 +13,11 @@ class WordsController extends Controller
     public function index(Request $request)
     {
         $star = $request->input('star', 5);
-        $words = Word::whereStar($star)->where('if_grasp', Word::$FAIL_CHECK)->paginate(40);
+        $query = Word::whereStar($star)->where('if_grasp', Word::$FAIL_CHECK);
+        if ($request->input('onlyMarked') === 'true') {
+            $query->where('remark', '<>', '');
+        }
+        $words = $query->paginate(40);
         return \App\Http\Resources\Word::collection($words);
     }
 
