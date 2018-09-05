@@ -17,8 +17,14 @@ class WordsController extends Controller
         if ($request->input('onlyMarked') === 'true') {
             $query->where('remark', '<>', '');
         }
-        $words = $query->paginate(40);
+        $words = $query->paginate($request->input('pageSize', 30));
         return \App\Http\Resources\Word::collection($words);
+    }
+
+    public function show ($word)
+    {
+        $word = Word::whereWord($word)->first();
+        return new \App\Http\Resources\Word($word);
     }
 
     public function setStatus($word, $status)
