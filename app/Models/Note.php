@@ -16,7 +16,7 @@ class Note extends Model
         if (in_array($status, [0,1])) {
             $query->where('status', $status);
         }
-        return $query->paginate();
+        return $query->paginate($request->input('pageSize', 30));
     }
 
     public static function hasWord($word)
