@@ -11,7 +11,7 @@ class Note extends Model
     public static function getNotes(Request $request)
     {
         $query = self::latest()->leftJoin('words', 'notes.word', '=', 'words.word')
-                    ->select('notes.*', 'senses', 'attrs', 'phonetics');
+                    ->select('notes.*', 'senses', 'attrs', 'phonetics', 'star');
         $status = $request->input('status');
         if (in_array($status, [0,1])) {
             $query->where('status', $status);
