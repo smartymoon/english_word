@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class Note extends Model
 {
-    protected $fillable = ['word', 'remark', 'status'];
+    protected $fillable = ['word', 'remark', 'status', 'category_id'];
     public static function getNotes(Request $request)
     {
         $query = self::latest()->leftJoin('words', 'notes.word', '=', 'words.word')
@@ -15,6 +15,10 @@ class Note extends Model
         $status = $request->input('status');
         if (in_array($status, [0,1])) {
             $query->where('status', $status);
+        }
+
+        if ($category = $request->input('category', 0)) {
+            $query->where('category_id', $category);
         }
         return $query->paginate($request->input('pageSize', 30));
     }
