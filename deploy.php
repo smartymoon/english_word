@@ -7,7 +7,7 @@ require 'recipe/laravel.php';
 set('application', 'tools');
 
 // Project repository
-set('repository', 'git@gitee.com:littlemoon/tools.git');
+set('repository', 'git@github.com:smartymoon/tools.git');
 
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true); 

@@ -19,9 +19,16 @@ Route::group(['namespace' => 'Iview'], function () {
     Route::group(['middleware'=>'auth:iview'], function() {
         Route::post('logout', 'AuthController@logout');
 
+        // words
         Route::get('words/{word}', 'WordsController@show');
         Route::get('words', 'WordsController@index');
         Route::put('words/{word}/remark', 'WordsController@remark');
         Route::post('words/{word}/{status}', 'WordsController@setStatus');
+
+        // remark
+        Route::get('notes', 'NotesController@index');
+        Route::post('notes', 'NotesController@store');
+        Route::put('notes/{word}', 'NotesController@update');
+        Route::delete('notes/{word}', 'NotesController@destroy');
     });
 });
